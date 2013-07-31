@@ -1,0 +1,41 @@
+body {
+    margin: 0;
+}
+
+.clear {
+    clear: both;
+}
+
+.image {
+    cursor: pointer;
+    max-height: 100%;
+    max-width: 100%;
+    vertical-align: top;
+}
+.image_block {
+    border: 1px solid #ddd;
+    float: left;
+    height: 150px;
+    margin: 20px 0 0 20px;
+    text-align: center;
+    width: 200px;
+}
+.images_field {
+    border: 1px solid red;
+    margin-left: 15%;
+    width: 70%;
+}
+
+.share {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    width: 100px;
+}
+
+.tools {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    width: 100px;
+}
