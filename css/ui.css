@@ -13,29 +13,29 @@ body {
     vertical-align: top;
 }
 .image_block {
-    border: 1px solid #ddd;
     float: left;
     height: 150px;
     margin: 20px 0 0 20px;
+    outline: 1px solid #ddd;
     text-align: center;
     width: 200px;
 }
-.images_field {
-    border: 1px solid red;
-    margin-left: 15%;
-    width: 70%;
+.images {
+    outline: 1px solid black;
 }
 
 .share {
+    outline: 1px solid black;
     position: fixed;
-    right: 10px;
-    top: 10px;
+    right: 0;
+    top: 0;
     width: 100px;
 }
 
 .tools {
+    left: 0;
+    outline: 1px solid black;
     position: fixed;
-    left: 10px;
-    top: 10px;
-    width: 100px;
+    top: 0;
+    width: 150px;
 }

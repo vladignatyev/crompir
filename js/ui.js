@@ -1,10 +1,15 @@
 $(document).ready(function() {
+    considerInterface();
+    $(window).resize(function() {
+        considerInterface();
+    });
     createFishyField();
 });
 
 var config = {
-    width: 200,
+    scrollbarWidth: 18,
 }
+
 var fishyImages = [
     'http://1280x800.org.ua/uploads/posts/2012-08/1344920474_8787873.jpg',
     'http://usiter.com/uploads/20120604/kotiki+22391105233.jpg',
@@ -22,13 +27,18 @@ var fishyImages = [
     'http://maxismile.net/uploads/posts/2012-12/1354621027_untitled_by_boborotenj-d5n42zw.jpg',
 ];
 
+function considerInterface() {
+    $('.images').css({
+        'margin-left': $('.tools').width(),
+        'width': $(document).width() - $('.tools').width() - $('.share').width() - config.scrollbarWidth
+    });
+}
+
 function createFishyField() {
     fishyImages = fishyImages.concat(fishyImages, fishyImages, fishyImages, fishyImages);
     $.each(fishyImages, function(index, value) {
-        var image_block = $('<div class="image_block">');
-        var image = $('<img class="image" src="' + value + '">');
-        image.appendTo(image_block);
-        image_block.appendTo($('.images_field'));
+        var html = '<div class="image_block"><img class="image" src="' + value + '"/></div>';
+        $(html).appendTo($('.images'));
     });
-    $('<div class="clear">').appendTo($('.images_field'));
+    $('<div class="clear">').appendTo($('.images'));
 }
