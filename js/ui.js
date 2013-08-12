@@ -37,8 +37,26 @@ function considerInterface() {
 function createFishyField() {
     fishyImages = fishyImages.concat(fishyImages, fishyImages, fishyImages, fishyImages);
     $.each(fishyImages, function(index, value) {
-        var html = '<div class="image_block"><img class="image" src="' + value + '"/></div>';
+        var html = '<div class="image_block"><img class="image" src="' + value + '" onclick="initPopup(this)"/></div>';
         $(html).appendTo($('.images'));
     });
     $('<div class="clear">').appendTo($('.images'));
+}
+
+function closePopup() {
+    $('.popup_content,.popup_layout').remove();
+}
+
+function initPopup(image) {
+    var html =
+        '<div class="popup_layout" onclick="closePopup()"></div>' +
+        '<div class="popup_content">' +
+            '<img class="popup_image" src="' + $(image).prop('src') + '"/>' +
+        '</div>';
+    $(html).appendTo($('body'));
+
+    $('.popup_content').css({
+        'left':  ($(window).width() - $('.popup_content').width()) / 2,
+        'top':  ($(window).height() - $('.popup_content').height()) / 2,
+    });
 }
