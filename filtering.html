@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="js/crompir.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var i = new Image();
+            i.src = 'testimages/superius.jpg';
+            i.onload = function (event) {
+                $('#simple').append(crompir.resizeImage(i, {
+                    "newWidth": 320
+                }));
+            };
+
+            var i2 = new Image();
+            i2.src = 'testimages/superius.jpg';
+            i2.onload = function (event) {
+                $('#improved').append(crompir.resizeImage2(i, {
+                    "newWidth": 320
+                }));
+            };
+        });
+    </script>
+</head>
+<body>
+
+<h1>Сжатое с помощью браузерного img</h1>
+<img src="testimages/superius.jpg" width="320"/>
+<h1>Сжатое простым алгоритмом (crompir.resizeImage)</h1>
+<div id="simple"></div>
+<h1>Сжатое алгоритмом с антиалиасингом (crompir.resizeImage2)</h1>
+<div id="improved"></div>
+
+</body>
+</html>
