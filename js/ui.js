@@ -1,8 +1,4 @@
 $(document).ready(function() {
-    considerInterface();
-    $(window).resize(function() {
-        considerInterface();
-    });
     createFishyField();
 });
 
@@ -26,13 +22,6 @@ var fishyImages = [
     'http://www.ellf.ru/uploads/posts/2013-03/1364141215_4.jpg',
     'http://maxismile.net/uploads/posts/2012-12/1354621027_untitled_by_boborotenj-d5n42zw.jpg',
 ];
-
-function considerInterface() {
-    $('.images').css({
-        'margin-left': $('.tools').width(),
-        'width': $(document).width() - $('.tools').width() - $('.share').width() - config.scrollbarWidth
-    });
-}
 
 function createFishyField() {
     fishyImages = fishyImages.concat(fishyImages, fishyImages, fishyImages, fishyImages);

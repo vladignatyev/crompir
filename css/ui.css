@@ -7,21 +7,26 @@ body {
 }
 
 .image {
+    border: 2px solid white;
+    box-shadow: 0 0 3px 1px #bbb;
     cursor: pointer;
+    margin: -2px 0 0 -2px;
     max-height: 100%;
     max-width: 100%;
-    vertical-align: top;
+    vertical-align: middle;
 }
 .image_block {
     float: left;
     height: 150px;
+    line-height: 150px;
     margin: 20px 0 0 20px;
-    outline: 1px solid #ddd;
+    /*outline: 1px solid #ddd;*/
     text-align: center;
-    width: 200px;
+    width: 150px;
 }
 .images {
-    outline: 1px solid black;
+    border-left: 1px solid black;
+    margin-left: 150px;
 }
 
 .popup_content {
@@ -44,17 +49,9 @@ body {
     width: 100%;
 }
 
-.share {
-    outline: 1px solid black;
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 100px;
-}
-
 .tools {
     left: 0;
-    outline: 1px solid black;
+    border: 1px solid black;
     position: fixed;
     top: 0;
     width: 150px;
