@@ -26,7 +26,7 @@ body {
 }
 .images {
     border-left: 1px solid black;
-    margin-left: 150px;
+    margin-left: 160px;
 }
 
 .popup_content {
@@ -49,10 +49,22 @@ body {
     width: 100%;
 }
 
+.scale {
+    position: absolute;
+    bottom: 0;
+}
+.scale span {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .tools {
-    left: 0;
-    border: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    height: 99%;
     position: fixed;
+    left: 0;
     top: 0;
     width: 150px;
 }

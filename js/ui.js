@@ -49,3 +49,11 @@ function initPopup(image) {
         'top':  ($(window).height() - $('.popup_content').height()) / 2,
     });
 }
+
+function setScale(value) {
+    $('.image_block').css({
+        'height': value,
+        'text-align': value,
+        'width': value,
+    });
+}
