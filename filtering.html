@@ -9,17 +9,19 @@
             var i = new Image();
             i.src = 'testimages/very-big.jpg';
             i.onload = function (event) {
-                $(document.body).append(crompir.resizeImage(i, {
-                    "newWidth": 320
-                }));
-
                 var i2 = new Image();
                 i2.src = 'testimages/very-big.jpg';
                 i2.onload = function (event) {
                     $(document.body).append(crompir.resizeImage2(i2, {
                         "newWidth": 320
                     }));
+                    $(document.body).append(crompir.resizeImage(i, {
+                    "newWidth": 320
+                }));
                 };
+
+
+
             };
 
 
