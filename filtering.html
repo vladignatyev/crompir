@@ -7,31 +7,38 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var i = new Image();
-            i.src = 'testimages/superius.jpg';
+            i.src = 'testimages/very-big.jpg';
             i.onload = function (event) {
-                $('#simple').append(crompir.resizeImage(i, {
+                $(document.body).append(crompir.resizeImage(i, {
                     "newWidth": 320
                 }));
+
+                var i2 = new Image();
+                i2.src = 'testimages/very-big.jpg';
+                i2.onload = function (event) {
+                    $(document.body).append(crompir.resizeImage2(i2, {
+                        "newWidth": 320
+                    }));
+                };
             };
 
-            var i2 = new Image();
-            i2.src = 'testimages/superius.jpg';
-            i2.onload = function (event) {
-                $('#improved').append(crompir.resizeImage2(i, {
-                    "newWidth": 320
-                }));
-            };
+
         });
     </script>
+    <style type="text/css">
+        canvas {
+            margin-right: 4px;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Сжатое с помощью браузерного img</h1>
-<img src="testimages/superius.jpg" width="320"/>
-<h1>Сжатое простым алгоритмом (crompir.resizeImage)</h1>
-<div id="simple"></div>
-<h1>Сжатое алгоритмом с антиалиасингом (crompir.resizeImage2)</h1>
-<div id="improved"></div>
+<!--<h1>Сжатое с помощью браузерного img</h1>-->
+<img src="testimages/very-big.jpg" width="320"/>
+<!--<h1>Сжатое простым алгоритмом (crompir.resizeImage)</h1>-->
+<!--<div id="simple"></div>-->
+<!--<h1>Сжатое алгоритмом с антиалиасингом (crompir.resizeImage2)</h1>-->
+<!--<div id="improved"></div>-->
 
 </body>
 </html>
