@@ -3,68 +3,53 @@
 <head>
     <title></title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="javascripts/crompir.js"></script>
+    <script src="javascripts/imagetools.js"></script>
+    <script src="javascripts/jszip.js"></script>
+    <script src="javascripts/jszip-inflate.js"></script>
+
     <script type="text/javascript">
+        var imgs = [];
 
+        function saveImages() {
+            var zip = new JSZip();
 
-        crompir.imgs = [];
-
-
-
-        crompir.Loader = function () {
-            var myFiles;
-            var myImages = [];
-            var fileLoadingCursor;
-
-            function recursivelyLoad() {
-                if (fileLoadingCursor >= myFiles.length) {
-                    for (var i = 0; i < myImages.length; i++) {
-                        var img = crompir.resizeImage(myImages[i], {'newHeight': 200});
-                        console.log(img);
-                        $('body').append($(img[0]));
-                    }
-                    return;
-                }
-
-                var file = myFiles[fileLoadingCursor];
-                var fr = new FileReader();
-
-                function onload() {
-                    var image = new Image();
-                    image.onload = function (event) {
-                        myImages.push(image);
-                        recursivelyLoad();
-                    };
-                    image.src = fr.result;
-                }
-
-                fr.onload = onload;
-                fr.readAsDataURL(file);
-                fileLoadingCursor += 1;
+            for (var i = 0; i < imgs.length; i++) {
+                var scaled = imgs[i];
+                var canvas = scaled[0];
+                var savable = new Image();
+                savable.src = canvas.toDataURL('image/jpeg');
+                zip.file("img"+i+".jpg", savable.src.substr(savable.src.indexOf(',')+1), {base64:true});
             }
 
-            this.load = function (files) {
-                myFiles = files;
-                fileLoadingCursor = 0;
-                recursivelyLoad();
-            };
-
-            return this;
-        };
-
-        crompir.init = function ($el) {
-            var input = $el.find('input[name=file]');
-            var previewsPanel = $el.find('.previewPane');
-
-            input.bind('change', function (event) {
-                var files = event.target.files;
-                var loader = new crompir.Loader();
-                loader.load(files);
-            });
-        };
-
+            location.href="data:application/zip;base64," + zip.generate();
+        }
 
         $(document).ready(function () {
-            crompir.init($('#crompir'))
+            $('input[name=file]').bind('change', function(event){
+                var loader = new crompir.Loader();
+                $(loader).bind('progress', function(event, data){
+                    $('body').append(data.preview[0]); //todo: emulating previews generating
+                });
+                $(loader).bind('complete', function(event, data){
+
+                    //todo: emulating post-processing of images
+                    var images = data.imgDatas;
+                    for (var i = 0; i < images.length; i++) {
+                        var scaled = crompir.images.resizeImage(images[i], {'newWidth':100});
+                        imgs.push(scaled);
+                    }
+
+                    $('#save').bind('click', function(){
+                        saveImages();
+                    });
+                    $('#save').show();
+                });
+                loader.load(event.target.files);
+                console.log(event.target.files);
+            });
+        });
+        $('#save').click(function(){
         });
     </script>
 </head>
@@ -73,7 +58,7 @@
 <div id="crompir">
     <input name="file" type="file" multiple/>
 
-    <canvas class="previewPane" style="position: absolute; width: 100%; height: 100px;"></canvas>
+    <button id="save" style="display: none;">Save...</button>
 </div>
 
 
