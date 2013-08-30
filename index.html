@@ -8,17 +8,25 @@
     <script src="javascripts/jszip-inflate.js"></script>
 
     <script type="text/javascript">
-        var imgs = [];
+        var productImages = [];
+        var sourceImages = [];
 
         function saveImages() {
             var zip = new JSZip();
 
-            for (var i = 0; i < imgs.length; i++) {
-                var scaled = imgs[i];
-                var canvas = scaled[0];
+            //processing
+            $('#status').html('Processing...');
+            for (var k = 0; k < sourceImages.length; k++) {
+                productImages.push(crompir.processing.resizeImage(sourceImages[k].image, {'newWidth':400.0}));
+            }
+            $('#status').html('');
+
+            console.log(productImages);
+            //generating archive
+            for (var i = 0; i < productImages.length; i++) {
                 var savable = new Image();
-                savable.src = canvas.toDataURL('image/jpeg');
-                zip.file("img"+i+".jpg", savable.src.substr(savable.src.indexOf(',')+1), {base64:true});
+                savable.src = productImages[i].toDataURL('image/jpeg');
+                zip.file("img"+(i+1)+".jpg", savable.src.substr(savable.src.indexOf(',')+1), {base64:true});
             }
 
             location.href="data:application/zip;base64," + zip.generate();
@@ -28,17 +36,12 @@
             $('input[name=file]').bind('change', function(event){
                 var loader = new crompir.Loader();
                 $(loader).bind('progress', function(event, data){
-                    $('body').append(data.preview[0]); //todo: emulating previews generating
+                    $('body').append(data.preview); //todo: emulating previews generating
                 });
                 $(loader).bind('complete', function(event, data){
-
-                    //todo: emulating post-processing of images
-                    var images = data.imgDatas;
-                    for (var i = 0; i < images.length; i++) {
-                        var scaled = crompir.processing.resizeImage(images[i], {'newWidth':64.0});
-                        imgs.push(scaled);
-                    }
-
+                    sourceImages = data.result;
+                    console.log('source Imags');
+                    console.log(sourceImages);
                     $('#save').bind('click', function(){
                         saveImages();
                     });
@@ -53,7 +56,7 @@
     </script>
 </head>
 <body>
-
+<div id="status"></div>
 <div id="crompir">
     <input name="file" type="file" multiple/>
 

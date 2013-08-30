@@ -23,17 +23,18 @@ crompir.Loader = function (previewHeight) {
 
     var $this = this;
 
-    function updateProgress(count, previewImgData, image) {
+    function updateProgress(count, previewCanvas, sourceImage) {
+        myImages.push({'previewImgData':previewCanvas, 'image':sourceImage});
         $($this).trigger('progress',
-            {'preview':previewImgData,
-             'image':image,
+            {'preview':previewCanvas,
+             'image':sourceImage,
              'count':count,
              'total':myFiles.length
             });
     }
 
     function statusComplete() {
-        $($this).trigger('complete', {'imgDatas':myImages});
+        $($this).trigger('complete', {'result':myImages});
     }
 
     function recursivelyLoad() {
@@ -47,10 +48,9 @@ crompir.Loader = function (previewHeight) {
         function onload() {
             var image = new Image();
             image.onload = function (event) {
-                var previewImgData = crompir.processing.resizeImage(image, {'newHeight': PREVIEW_HEIGHT});
-                myImages.push(image);
-                updateProgress(++fileLoadingCursor, previewImgData, image);
+                var previewCanvas = crompir.processing.resizeImage(image, {'newHeight': PREVIEW_HEIGHT});
 
+                updateProgress(++fileLoadingCursor, previewCanvas, image);
                 recursivelyLoad();
             };
             image.src = fr.result;
@@ -146,8 +146,14 @@ crompir.processing = {
             newHeight = srcImgHeight * params['scale'];
         } else {
             //fail with error
-            throw "Improper call to crompir.resizeImage2";
+            throw "Improper call to crompir.processing.resizeImage";
         }
+
+        newWidth = newWidth | 0;
+        newHeight = newHeight | 0;
+
+        console.log(newWidth);
+        console.log(newHeight);
 
         var tmpCanvas = document.createElement("canvas");
         var tctx = tmpCanvas.getContext("2d");
@@ -267,6 +273,6 @@ crompir.processing = {
         ctx.putImageData(d, 0, 0);
 
 
-        return [canvasCopy, ctx];
+        return canvasCopy;
     }
 };
