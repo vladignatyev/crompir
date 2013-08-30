@@ -2,31 +2,73 @@
 <html>
 <head>
     <title></title>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="js/jquery.min.js"></script>
     <script src="js/crompir.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             var i2 = new Image();
             i2.src = 'testimages/very-big6.jpg';
             i2.onload = function (event) {
-                $(document.body).append(crompir.resizeImage2(i2, {
-                    "newWidth": 200
+
+                var a = (new Date()).getTime();
+//                for (var i = 0; i < 20; i++) {
+//                crompir.resizeImage2(i2, {
+//                    "newWidth": 300
+//                });
+//                }
+//                console.log(((new Date()).getTime() - a)/20.0);
+//                for (var i = 0; i < 20; i++) {
+//                crompir.resizeImage2(i2, {
+//                    "newWidth": 400
+//                });
+//                }
+//                console.log(((new Date()).getTime() - a)/20.0);
+//                for (var i = 0; i < 20; i++) {
+//                crompir.resizeImage2(i2, {
+//                    "newWidth": 600
+//                });
+//                }
+//                console.log(((new Date()).getTime() - a)/20.0);
+//                for (var i = 0; i < 20; i++) {
+//                crompir.resizeImage2(i2, {
+//                    "newWidth": 700
+//                });
+//                }
+//                console.log(((new Date()).getTime() - a)/20.0);
+//                for (var i = 0; i < 20; i++) {
+//                crompir.resizeImage2(i2, {
+//                    "newWidth": 800
+//                });
+//                }
+                console.log(((new Date()).getTime() - a)/20.0);
+                for (var i = 0; i < 10; i++) {
+                $(document.body).append(crompir.processing.resizeImage(i2, {
+                    "newWidth": 33 * (i+1)
                 }));
-                $(document.body).append(crompir.resizeImage2(i2, {
-                    "newWidth": 400
-                }));
-                $(document.body).append(crompir.resizeImage2(i2, {
-                    "newWidth": 800
-                }));
+                }
+                console.log(((new Date()).getTime() - a)/20.0);
+//                a = (new Date()).getTime();
+//                $(document.body).append(crompir.resizeImage2(i2, {
+//                    "newWidth": 200
+//                }));
+//                console.log((new Date()).getTime() - a);
+//                a = (new Date()).getTime();
+//                $(document.body).append(crompir.resizeImage2(i2, {
+//                    "newWidth": 400
+//                }));
+//                console.log((new Date()).getTime() - a);
+//                a = (new Date()).getTime();
             };
-//
-            var i3 = new Image();
-            i3.src = 'testimages/very-small.jpg';
-            i3.onload = function (event) {
-            $(document.body).append(crompir.resizeImage2(i3, {
-                    "newWidth": 300
-                }));
-            };
+////
+//            var i3 = new Image();
+//            i3.src = 'testimages/very-small.jpg';
+//            i3.onload = function (event) {
+//                a = (new Date()).getTime();
+//            $(document.body).append(crompir.resizeImage2(i3, {
+//                    "newWidth": 300
+//                }));
+//                console.log((new Date()).getTime() - a);
+//            };
         });
     </script>
     <style type="text/css">
