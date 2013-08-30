@@ -122,156 +122,87 @@ crompir.resizeImage2 = function (srcImg, params) {
     var ctx = canvasCopy.getContext("2d");
     canvasCopy.width = newWidth;
     canvasCopy.height = newHeight;
-//    ctx.drawImage(srcImg, 0.002, 0.002, newWidth, newHeight);
-
-    // do antialiasing
-//
-    d0 = tctx.getImageData(0, 0, srcImgWidth, srcImgHeight);
-
-    var factor = srcImgWidth / newWidth;
-    var factor2 = factor * factor;
-
+    d0 = tctx.getImageData(0, 0, srcImgWidth, srcImgHeight); // source image
     d = ctx.getImageData(0, 0, newWidth, newHeight);
-    for (var i = 0; i < newWidth; i++) {
-        for (var j = 0; j < newHeight; j++) {
-            var index = (j * newWidth + i) << 2; //*4
-            var r = 0.0;
-            var g = 0.0;
-            var b = 0.0;
+    var factor = srcImgWidth / newWidth;
 
-            var i0 = (i * factor);
-            var i1 = ((i + 1) * factor);
-            var j0 = ((j) * factor);
-            var j1 = ((j + 1) * factor);
+    if (factor > 1.0) {
 
-            var c = 0;
-            for (var ii = i0; ii < i1; ii += factor * 0.33) {
-                for (var ij = j0; ij < j1; ij += factor * 0.33) {
-                    var index2 = ((Math.floor(ij)) * srcImgWidth + Math.floor(ii)) << 2; //*4
-                    r += d0.data[index2];
-                    g += d0.data[index2 + 1];
-                    b += d0.data[index2 + 2];
-                    c += 1;
+        for (var i = 0; i < newWidth; i++) {
+            for (var j = 0; j < newHeight; j++) {
+                var index = (j * newWidth + i) << 2; //*4
+                var r = 0.0;
+                var g = 0.0;
+                var b = 0.0;
+
+                var i0 = (i * factor);
+                var i1 = ((i + 1) * factor);
+                var j0 = ((j) * factor);
+                var j1 = ((j + 1) * factor);
+
+                var c = 0;
+                for (var ii = i0; ii < i1; ii += factor * 0.33) {
+                    for (var ij = j0; ij < j1; ij += factor * 0.33) {
+                        var index2 = ((Math.floor(ij)) * srcImgWidth + Math.floor(ii)) << 2; //*4
+                        r += d0.data[index2];
+                        g += d0.data[index2 + 1];
+                        b += d0.data[index2 + 2];
+                        c += 1;
+                    }
                 }
+                d.data[index] = r / c;
+                d.data[index + 1] = g / c;
+                d.data[index + 2] = b / c;
+                d.data[index + 3] = 255;
             }
-            d.data[index] = r / c;
-            d.data[index + 1] = g / c;
-            d.data[index + 2] = b / c;
-            d.data[index + 3] = 255;
         }
+
+    } else if (factor < 1.0) {
+        var ifactor = 1.5 / factor;
+        for (var i = 0; i < newWidth; i++) {
+            for (var j = 0; j < newHeight; j++) {
+                var index = (j * newWidth + i) << 2; //*4
+                var r = 0.0;
+                var g = 0.0;
+                var b = 0.0;
+
+                var i0 = ((i - ifactor) * factor);
+                var i1 = ((i + ifactor) * factor);
+                var j0 = ((j - ifactor) * factor);
+                var j1 = ((j + ifactor) * factor);
+
+                var ci = (i) * factor;
+                var cj = (j) * factor;
+
+                var c = 0;
+                for (var ii = i0; ii < i1; ii += factor) {
+                    for (var ij = j0; ij < j1; ij += factor) {
+                        var index2 = ((Math.floor(ij)) * srcImgWidth + Math.floor(ii)) << 2; //*4
+                        var x = Math.sqrt((ii - ci) * (ii - ci) + (ij - cj) * (ij - cj)) / (Math.sqrt(2) * 2);
+                        var k = 0.0;
+                        if (x <= 0.5) {
+                            k = 1.0 - 2.0 * x * x;
+                        } else if (x <= 1.0) {
+                            k = 2.0 * (x - 1.0) * (x - 1.0);
+                        }
+
+                        r += d0.data[index2] * k;
+                        g += d0.data[index2 + 1] * k;
+                        b += d0.data[index2 + 2] * k;
+                        c += k;
+                    }
+                }
+                d.data[index] = r / c;
+                d.data[index + 1] = g / c;
+                d.data[index + 2] = b / c;
+                d.data[index + 3] = 255;
+            }
+        }
+
     }
 
 
 //    upsampling implementation
-
-//    crompir.resizeImage2 = function (srcImg, params) {
-//    var srcImgWidth = srcImg.width;
-//    var srcImgHeight = srcImg.height;
-//    var newWidth = -1;
-//    var newHeight = -1;
-//
-//    if (params['newWidth']) {
-//        newWidth = params['newWidth'];
-//        if (params['newHeight']) {
-//            newHeight = params['newHeight'];
-//        } else {
-//            newHeight = srcImgHeight / srcImgWidth * newWidth;
-//        }
-//    } else if (params['newHeight']) {
-//        newHeight = params['newHeight'];
-//        newWidth = srcImgWidth / srcImgHeight * newHeight;
-//    } else if (params['scale']) {
-//        newWidth = srcImgWidth * params['scale'];
-//        newHeight = srcImgHeight * params['scale'];
-//    } else {
-//        //fail with error
-//        throw "Improper call to crompir.resizeImage2";
-//    }
-//
-//    var tmpCanvas = document.createElement("canvas");
-//    var tctx = tmpCanvas.getContext("2d");
-//    tmpCanvas.width = srcImgWidth;
-//    tmpCanvas.height = srcImgHeight;
-//    tctx.drawImage(srcImg, 0, 0, srcImgWidth, srcImgHeight);
-//
-//    var canvasCopy = document.createElement("canvas");
-//    var ctx = canvasCopy.getContext("2d");
-//    canvasCopy.width = newWidth;
-//    canvasCopy.height = newHeight;
-////    ctx.drawImage(srcImg, 0.002, 0.002, newWidth, newHeight);
-//
-//    // do antialiasing
-////
-//    d0 = tctx.getImageData(0, 0, srcImgWidth, srcImgHeight);
-//
-//    var factor = srcImgWidth / newWidth;
-//    var factor2 = factor * factor;
-//
-//    d = ctx.getImageData(0, 0, newWidth, newHeight);
-//    for (var i = 0; i < newWidth; i++) {
-//        for (var j = 0; j < newHeight; j++) {
-//            var index = (j * newWidth + i) << 2; //*4
-//            var r = 0.0;
-//            var g = 0.0;
-//            var b = 0.0;
-//
-//            var i0 = ((i - 3.5) * factor);
-//            var i1 = ((i + 3.5) * factor);
-//            var j0 = ((j - 3.5) * factor);
-//            var j1 = ((j + 3.5) * factor);
-//
-//            var ci = (i)*factor;
-//            var cj = (j)*factor;
-//
-//            var c = 0;
-////            alert(factor);
-//            for (var ii = i0; ii < i1; ii += factor) {
-//                for (var ij = j0; ij < j1; ij += factor) {
-//                    var index2 = ((Math.floor(ij)) * srcImgWidth + Math.floor(ii)) << 2; //*4
-//                    var x = Math.sqrt((ii - ci) * (ii - ci) + (ij - cj) * (ij - cj)) / (Math.sqrt(2)*3.5*factor);
-////                    var k = Math.sin(x)/x;
-//                    var k =0.0;
-//                    if (x <= 0.5) {
-//                        k = 1.0 - 2.0*x*x;
-//                    } else if (k <=1.0) {
-//                        k =2.0 * (x-1.0)*(x-1.0);
-//                    }
-//
-//                    r += d0.data[index2] * k;
-//                    g += d0.data[index2 + 1] * k;
-//                    b += d0.data[index2 + 2] * k;
-//                    c += k;
-//                }
-//            }
-//            d.data[index] = r / c;
-//            d.data[index + 1] = g / c;
-//            d.data[index + 2] = b / c;
-//            d.data[index + 3] = 255;
-//        }
-//    }
-
-
-//
-//    var s = 1;
-
-//    var resultData = ctx.createImageData(newWidth, newHeight);
-
-//    crompir.processing.kernelFilter(d, resultData, newWidth, newHeight,
-////        [
-////            0.1,0.1,0.1,0.1,0.1,
-////            0.1,1.3,1.3,1.3,0.1,
-////            0.1,1.3,3.7,1.3,0.1,
-////            0.1,1.3,1.3,1.3,0.1,
-////            0.1,0.1,0.1,0.1,0.1
-////
-////        ]
-//        [
-//            1.3,1.3,1.3,
-//            1.3,3.7,1.3,
-//            1.3,1.3,1.3
-//
-//        ]
-//        , 3, 1);
 
 
     ctx.putImageData(d, 0, 0);

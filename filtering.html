@@ -6,26 +6,27 @@
     <script src="js/crompir.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-                var i2 = new Image();
-                i2.src = 'testimages/very-big6.jpg';
-                i2.onload = function (event) {
-                    $(document.body).append(crompir.resizeImage2(i2, {
-                        "newWidth": 100
-                    }));
-                    $(document.body).append(crompir.resizeImage2(i2, {
-                        "newWidth": 400
-                    }));
-                    $(document.body).append(crompir.resizeImage2(i2, {
-                        "newWidth": 800
-                    }));
-//                    $(document.body).append(crompir.resizeImage(i, {
-//                    "newWidth": 320
-//                }));
-                };
-
-
-
-
+            var i2 = new Image();
+            i2.src = 'testimages/very-big6.jpg';
+            i2.onload = function (event) {
+                $(document.body).append(crompir.resizeImage2(i2, {
+                    "newWidth": 200
+                }));
+                $(document.body).append(crompir.resizeImage2(i2, {
+                    "newWidth": 400
+                }));
+                $(document.body).append(crompir.resizeImage2(i2, {
+                    "newWidth": 800
+                }));
+            };
+//
+            var i3 = new Image();
+            i3.src = 'testimages/very-small.jpg';
+            i3.onload = function (event) {
+            $(document.body).append(crompir.resizeImage2(i3, {
+                    "newWidth": 300
+                }));
+            };
         });
     </script>
     <style type="text/css">
@@ -35,13 +36,6 @@
     </style>
 </head>
 <body>
-
-<!--<h1>Сжатое с помощью браузерного img</h1>-->
-<img src="testimages/very-small.jpg" width="320"/>
-<!--<h1>Сжатое простым алгоритмом (crompir.resizeImage)</h1>-->
-<!--<div id="simple"></div>-->
-<!--<h1>Сжатое алгоритмом с антиалиасингом (crompir.resizeImage2)</h1>-->
-<!--<div id="improved"></div>-->
 
 </body>
 </html>
