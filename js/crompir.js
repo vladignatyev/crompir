@@ -126,9 +126,10 @@ crompir.resizeImage2 = function (srcImg, params) {
 
     // do antialiasing
 //
-    d0 = tctx.getImageData(0,0,srcImgWidth, srcImgHeight );
+    d0 = tctx.getImageData(0, 0, srcImgWidth, srcImgHeight);
 
     var factor = srcImgWidth / newWidth;
+    var factor2 = factor * factor;
 
     d = ctx.getImageData(0, 0, newWidth, newHeight);
     for (var i = 0; i < newWidth; i++) {
@@ -139,22 +140,36 @@ crompir.resizeImage2 = function (srcImg, params) {
             var b = 0.0;
 
             var i0 = (i * factor);
-            var i1 = ((i+1)*factor) ;
-            var j0 = (j * factor) ;
-            var j1 = ((j+1)*factor) ;
+            var i1 = ((i + 1) * factor);
+            var j0 = ((j) * factor);
+            var j1 = ((j + 1) * factor);
 
-            for (var ii = i0; ii < i1; ii+=1) {
-             for (var ij = j0; ij < j1; ij+=1) {
-               var index2 = ((Math.floor(ij)) * srcImgWidth + ii >> 0) << 2; //*4
-                 r += d0.data[index2];
-                 g += d0.data[index2+1];
-                 b += d0.data[index2+2];
+//            var ci = (i+0.5)*factor;
+//            var cj = (j+0.5)*factor;
+
+//            c = 0;
+            for (var ii = i0; ii < i1; ii += 0.4) {
+                for (var ij = j0; ij < j1; ij += 0.4) {
+                    var index2 = ((Math.floor(ij)) * srcImgWidth + Math.floor(ii)) << 2; //*4
+//                    var x = ((ii - ci) * (ii - ci) + (ij - cj) * (ij - cj));
+//                    var k = 0;
+//                    if (x <= 0.25 * factor2 * 0.25) {
+//                        k = 0.5 * (0.75 - x * x);
+//                    } else if (x > 0.25 * factor2 * 0.25 && x <= 2.25 * factor2) {
+//                        k = 0.5*( 0.5 * (x + 1.5) * (x + 1.5));
+//                    }
+                    k = 1.0;
+
+                    r += d0.data[index2] * k;
+                    g += d0.data[index2 + 1] * k;
+                    b += d0.data[index2 + 2] * k;
+                    c += k;
+                }
             }
-            }
-            d.data[index] = r / factor / factor;
-            d.data[index+1] = g / factor / factor;
-            d.data[index+2] = b / factor / factor;
-            d.data[index+3] = 255;
+            d.data[index] = r / c;
+            d.data[index + 1] = g / c;
+            d.data[index + 2] = b / c;
+            d.data[index + 3] = 255;
         }
     }
 //
