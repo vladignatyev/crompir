@@ -6,23 +6,18 @@
     <script src="js/crompir.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            var i = new Image();
-            i.src = 'testimages/very-big.jpg';
-            i.onload = function (event) {
                 var i2 = new Image();
-                i2.src = 'testimages/very-big.jpg';
+                i2.src = 'testimages/very-big5.jpg';
                 i2.onload = function (event) {
                     $(document.body).append(crompir.resizeImage2(i2, {
                         "newWidth": 320
                     }));
-                    $(document.body).append(crompir.resizeImage(i, {
-                    "newWidth": 320
-                }));
+//                    $(document.body).append(crompir.resizeImage(i, {
+//                    "newWidth": 320
+//                }));
                 };
 
 
-
-            };
 
 
         });
@@ -36,7 +31,7 @@
 <body>
 
 <!--<h1>Сжатое с помощью браузерного img</h1>-->
-<img src="testimages/very-big.jpg" width="320"/>
+<img src="testimages/very-small.jpg" width="320"/>
 <!--<h1>Сжатое простым алгоритмом (crompir.resizeImage)</h1>-->
 <!--<div id="simple"></div>-->
 <!--<h1>Сжатое алгоритмом с антиалиасингом (crompir.resizeImage2)</h1>-->
