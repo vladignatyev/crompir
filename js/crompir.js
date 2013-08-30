@@ -1,3 +1,4 @@
+//todo: переписать модуль так, чтобы функции можно было выполнять в web worker'ах
 if (typeof crompir == 'undefined') crompir = {};
 
 crompir.processing = {
