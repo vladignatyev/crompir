@@ -7,10 +7,16 @@
     <script type="text/javascript">
         $(document).ready(function () {
                 var i2 = new Image();
-                i2.src = 'testimages/very-big5.jpg';
+                i2.src = 'testimages/very-big6.jpg';
                 i2.onload = function (event) {
                     $(document.body).append(crompir.resizeImage2(i2, {
-                        "newWidth": 320
+                        "newWidth": 100
+                    }));
+                    $(document.body).append(crompir.resizeImage2(i2, {
+                        "newWidth": 400
+                    }));
+                    $(document.body).append(crompir.resizeImage2(i2, {
+                        "newWidth": 800
                     }));
 //                    $(document.body).append(crompir.resizeImage(i, {
 //                    "newWidth": 320
