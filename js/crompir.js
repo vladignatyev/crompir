@@ -144,21 +144,19 @@ crompir.resizeImage2 = function (srcImg, params) {
             var j0 = ((j) * factor);
             var j1 = ((j + 1) * factor);
 
-//            var ci = (i+0.5)*factor;
-//            var cj = (j+0.5)*factor;
+            var ci = (i+0.5)*factor;
+            var cj = (j+0.5)*factor;
 
-//            c = 0;
-            for (var ii = i0; ii < i1; ii += 0.4) {
-                for (var ij = j0; ij < j1; ij += 0.4) {
+            var c = 0;
+            for (var ii = i0; ii < i1; ii += 0.5) {
+                for (var ij = j0; ij < j1; ij += 0.5) {
                     var index2 = ((Math.floor(ij)) * srcImgWidth + Math.floor(ii)) << 2; //*4
-//                    var x = ((ii - ci) * (ii - ci) + (ij - cj) * (ij - cj));
-//                    var k = 0;
-//                    if (x <= 0.25 * factor2 * 0.25) {
-//                        k = 0.5 * (0.75 - x * x);
-//                    } else if (x > 0.25 * factor2 * 0.25 && x <= 2.25 * factor2) {
-//                        k = 0.5*( 0.5 * (x + 1.5) * (x + 1.5));
-//                    }
-                    k = 1.0;
+                    var x = Math.sqrt((ii - ci) * (ii - ci) + (ij - cj) * (ij - cj));
+                    if (x == 0.0) {
+                        k = 1.0;
+                    } else {
+                        k = Math.sin(x)/x;
+                    }
 
                     r += d0.data[index2] * k;
                     g += d0.data[index2 + 1] * k;
