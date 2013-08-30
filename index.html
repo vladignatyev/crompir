@@ -4,7 +4,6 @@
     <title></title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="javascripts/crompir.js"></script>
-    <script src="javascripts/imagetools.js"></script>
     <script src="javascripts/jszip.js"></script>
     <script src="javascripts/jszip-inflate.js"></script>
 
@@ -36,7 +35,7 @@
                     //todo: emulating post-processing of images
                     var images = data.imgDatas;
                     for (var i = 0; i < images.length; i++) {
-                        var scaled = crompir.images.resizeImage(images[i], {'newWidth':100});
+                        var scaled = crompir.processing.resizeImage(images[i], {'newWidth':64.0});
                         imgs.push(scaled);
                     }
 
