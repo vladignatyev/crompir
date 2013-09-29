@@ -165,6 +165,7 @@ crompir.processing = {
         var ctx = canvasCopy.getContext("2d");
         canvasCopy.width = newWidth;
         canvasCopy.height = newHeight;
+        canvasCopy.className = 'image';
         d0 = tctx.getImageData(0, 0, srcImgWidth, srcImgHeight); // source image
         d = ctx.getImageData(0, 0, newWidth, newHeight);
         var factor = srcImgWidth / newWidth;

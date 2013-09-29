@@ -7,6 +7,9 @@
     <script src="javascripts/jszip.js"></script>
     <script src="javascripts/jszip-inflate.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="./css/ui.css" />
+    <script src="javascripts/ui.js"></script>
+
     <script type="text/javascript">
         var productImages = [];
         var sourceImages = [];
@@ -36,7 +39,7 @@
             $('input[name=file]').bind('change', function(event){
                 var loader = new crompir.Loader();
                 $(loader).bind('progress', function(event, data){
-                    $('body').append(data.preview); //todo: emulating previews generating
+                    createImage(data.preview);
                 });
                 $(loader).bind('complete', function(event, data){
                     sourceImages = data.result;
@@ -59,10 +62,18 @@
 <div id="status"></div>
 <div id="crompir">
     <input name="file" type="file" multiple/>
-
     <button id="save" style="display: none;">Save...</button>
 </div>
-
+<div class="tools">
+    Поле со всякими функциональными кнопочками и переключателями.
+    <div class="scale">
+        Scale
+        <span onclick="setScale(100)">small</span>
+        <span onclick="setScale(150)">middle</span>
+        <span onclick="setScale(200)">big</span>
+    </div>
+</div>
+<div class="images"></div>
 
 </body>
 </html>
