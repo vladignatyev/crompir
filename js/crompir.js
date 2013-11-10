@@ -145,60 +145,65 @@ crompir.processing = {
             newWidth = srcImgWidth * params['scale'];
             newHeight = srcImgHeight * params['scale'];
         } else {
-            //fail with error
             throw "Improper call to crompir.processing.resizeImage";
         }
 
         newWidth = newWidth | 0;
         newHeight = newHeight | 0;
 
-        console.log(newWidth);
-        console.log(newHeight);
+        createSourceImage();
+        createPreviewImage();
 
-        var tmpCanvas = document.createElement("canvas");
-        var tctx = tmpCanvas.getContext("2d");
-        tmpCanvas.width = srcImgWidth;
-        tmpCanvas.height = srcImgHeight;
-        tctx.drawImage(srcImg, 0, 0, srcImgWidth, srcImgHeight);
-
-        var canvasCopy = document.createElement("canvas");
-        var ctx = canvasCopy.getContext("2d");
-        canvasCopy.width = newWidth;
-        canvasCopy.height = newHeight;
-        canvasCopy.className = 'image';
-        d0 = tctx.getImageData(0, 0, srcImgWidth, srcImgHeight); // source image
-        d = ctx.getImageData(0, 0, newWidth, newHeight);
         var factor = srcImgWidth / newWidth;
         var d0data = d0.data;
         var ddata = d.data;
 
         if (factor > 1.0) {
-            var aperture = factor * 0.33; // average by 3x3 pixels
+            factorIsBig();
+        } else if (factor < 1.0) {
+            factorIsSmall();
+        }
 
+        ctx.putImageData(d, 0, 0);
+
+        return canvasCopy;
+
+        function createPreviewImage() {
+            canvasCopy = document.createElement("canvas");
+            ctx = canvasCopy.getContext("2d");
+            canvasCopy.width = newWidth;
+            canvasCopy.height = newHeight;
+            canvasCopy.className = 'image';
+            d0 = tctx.getImageData(0, 0, srcImgWidth, srcImgHeight); // source image
+            d = ctx.getImageData(0, 0, newWidth, newHeight);
+        }
+
+        function createSourceImage() {
+            tmpCanvas = document.createElement("canvas");
+            tctx = tmpCanvas.getContext("2d");
+            tmpCanvas.width = srcImgWidth;
+            tmpCanvas.height = srcImgHeight;
+            tctx.drawImage(srcImg, 0, 0, srcImgWidth, srcImgHeight);
+        }
+
+        function factorIsBig() {
+            var aperture = factor * 0.33; // average by 3x3 pixels
             for (var j = 0; j < newHeight; j++) {
                 var j0 = (j * factor);
                 var j1 = j0 + factor;
                 var jw = j * newWidth;
-
                 for (var i = 0; i < newWidth; i++) {
-
                     var index = (jw + i) << 2; //*4
                     var r = 0.0;
                     var g = 0.0;
                     var b = 0.0;
-
                     var i0 = i * factor;
                     var i1 = i0 + factor;
-
-
                     var c = 0.0;
-
                     for (var ij = j0; ij < j1; ij += aperture) {
                         var ijj = (ij | 0) * srcImgWidth;
                         for (var ii = i0; ii < i1; ii += aperture) {
-
                             var index2 = (ijj + ii | 0) << 2; //*4
-
                             r += d0data[index2];
                             g += d0data[index2 + 1];
                             b += d0data[index2 + 2];
@@ -212,35 +217,28 @@ crompir.processing = {
                     ddata[index + 3] = 255;
                 }
             }
+        }
 
-        } else if (factor < 1.0) {
+        function factorIsSmall() {
             for (var j = 0; j < newHeight; j++) {
                 var jw = j * newWidth;
                 var jfac = j * factor;
                 var j0 = jfac - 1.0;
                 var j1 = jfac + 1.0;
                 var cj = j * factor;
-
                 for (var i = 0; i < newWidth; i++) {
-
                     var index = (jw + i) << 2; //*4
                     var r = 0.0;
                     var g = 0.0;
                     var b = 0.0;
-
                     var ifac = i * factor;
-
                     var i0 = ifac - 1.0;
                     var i1 = ifac + 1.0;
-
                     var ci = i * factor;
-
-
                     var c = 0;
                     for (var ii = i0; ii < i1; ii += factor) {
                         for (var ij = j0; ij < j1; ij += factor) {
                             var index2 = ((Math.floor(ij)) * srcImgWidth + Math.floor(ii)) << 2; //*4
-
                             var a1 = ii - ci;
                             var a2 = ij - cj;
                             var x = (a1 * a1 + a2 * a2) >> 3; // x^2
@@ -250,7 +248,6 @@ crompir.processing = {
                             } else if (x <= 1.0) {
                                 k = 2.0 * (x - Math.sqrt(x)) + 1.0;
                             }
-
                             r += d0data[index2] * k;
                             g += d0data[index2 + 1] * k;
                             b += d0data[index2 + 2] * k;
@@ -264,16 +261,7 @@ crompir.processing = {
                     ddata[index + 3] = 255;
                 }
             }
-
         }
 
-
-//    upsampling implementation
-
-
-        ctx.putImageData(d, 0, 0);
-
-
-        return canvasCopy;
     }
 };
