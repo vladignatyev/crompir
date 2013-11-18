@@ -11,7 +11,7 @@ function closePopup() {
 function setScale(value) {
     $('.image_block').css({
         'height': value,
-        'text-align': value,
+        'line-height': value + 'px',
         'width': value,
     });
 }
