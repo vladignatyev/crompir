@@ -20,6 +20,8 @@ crompir.Loader = function (previewHeight) {
     var myImages = [];
     var fileLoadingCursor;
     var PREVIEW_HEIGHT = previewHeight || 200;
+    // захардкожено
+    var PREVIEW_SIZE = 200; // максимальная высота или ширина превьюшки
 
     var $this = this;
 
@@ -48,7 +50,8 @@ crompir.Loader = function (previewHeight) {
         function onload() {
             var image = new Image();
             image.onload = function (event) {
-                var previewCanvas = crompir.processing.resizeImage(image, {'newHeight': PREVIEW_HEIGHT});
+//                var previewCanvas = crompir.processing.resizeImage(image, {'newHeight': PREVIEW_HEIGHT});
+                var previewCanvas = crompir.processing.resizeImage(image, {'previewSize': PREVIEW_SIZE});
 
                 updateProgress(++fileLoadingCursor, previewCanvas, image);
                 recursivelyLoad();
@@ -131,7 +134,16 @@ crompir.processing = {
         var newWidth = -1;
         var newHeight = -1;
 
-        if (params['newWidth']) {
+        if (params['previewSize']) {
+            var previewScale;
+            if (srcImgHeight > srcImgWidth) {
+                previewScale = params['previewSize'] / srcImgHeight;
+            } else {
+                previewScale = params['previewSize'] / srcImgWidth;
+            }
+            newHeight = srcImgHeight * previewScale;
+            newWidth = srcImgWidth * previewScale;
+        } else if (params['newWidth']) {
             newWidth = params['newWidth'];
             if (params['newHeight']) {
                 newHeight = params['newHeight'];
