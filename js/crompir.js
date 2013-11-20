@@ -3,11 +3,17 @@
 if (typeof crompir == 'undefined') crompir = {};
 crompir.processing = {/*forward*/};
 
+/**
+ * Crompir
+ * */
 crompir.init = function ($el) {
     var $this = this;
+    /**
+     * Handler to load files chosen in files input field
+     * */
     this.handleFiles = function (event) {
         var fileObjs = event.target.files;
-        var loader = crompir.Loader();
+        var loader = crompir.PreviewLoader();
         loader.load(fileObjs);
     };
 
@@ -15,15 +21,13 @@ crompir.init = function ($el) {
 };
 
 
-crompir.Loader = function (previewHeight) {
+crompir.PreviewLoader = function (previewSize) {
+    var $this = this;
+
     var myFiles;
     var myImages = [];
     var fileLoadingCursor;
-    var PREVIEW_HEIGHT = previewHeight || 200;
-    // захардкожено
-    var PREVIEW_SIZE = 200; // максимальная высота или ширина превьюшки
-
-    var $this = this;
+    var PREVIEW_SIZE = previewSize || 200;
 
     function updateProgress(count, previewCanvas, sourceImage) {
         myImages.push({'previewImgData':previewCanvas, 'image':sourceImage});
@@ -50,7 +54,6 @@ crompir.Loader = function (previewHeight) {
         function onload() {
             var image = new Image();
             image.onload = function (event) {
-//                var previewCanvas = crompir.processing.resizeImage(image, {'newHeight': PREVIEW_HEIGHT});
                 var previewCanvas = crompir.processing.resizeImage(image, {'previewSize': PREVIEW_SIZE});
 
                 updateProgress(++fileLoadingCursor, previewCanvas, image);
@@ -74,45 +77,80 @@ crompir.Loader = function (previewHeight) {
 
 
 crompir.processing = {
+    /**
+     * Function to return brightness of color defined by R, G, B values [0; 1]
+     * */
     brightness: function (r, g, b) {
         return 0.2126 * r + 0.7152 * g + 0.0722 * b;
     },
-    kernelFilter: function (imageData, resultData, width, height, kernel, kernelSize, kernelCenter) {
-        /*
-         * [1 2 1
-         *  2 4 2
-         *  1 2 1]
-         * */
 
+    /**
+     * Kernel filter
+     *
+     * @see http://en.wikipedia.org/wiki/Kernel_(image_processing)
+     *
+     * @param imageData ImageData instance containing source image
+     * @param resultData ImageData instance which would contain output
+     * @param width Width of source image
+     * @param height Height of source image
+     * @param kernel Convolution matrix in form of linear array
+     * @param kernelSize Size of kernel matrix
+     * @param kernelCenter Center point of kernel, in common approximately kernelSize / 2
+     *
+     * @description
+     *
+     * Linear blur kernel @see http://en.wikipedia.org/wiki/Kernel_(image_processing)
+     *
+     * linearKernel = [1, 2, 1, 2, 4, 2, 1, 2, 1];
+     *
+     *
+     * Sample gaussian blur kernel (@see http://en.wikipedia.org/wiki/Gaussian_blur)
+     *
+     * gaussianKernel = [0.00000067, 0.00002292, 0.00019117,0.00038771,0.00019117,0.00002292,0.00000067,
+     *   0.00002292,0.00078634,0.00655965,0.01330373,0.00655965,0.00078633,0.00002292,
+     *   0.00019117,0.00655965,0.05472157,0.11098164,0.05472157,0.00655965,0.00019117,
+     *   0.00038771,0.01330373,0.11098164,0.22508352,0.11098164,0.01330373,0.00038771,
+     *   0.00019117,0.00655965,0.05472157,0.11098164,0.05472157,0.00655965,0.00019117,
+     *   0.00002292,0.00078633,0.00655965,0.01330373,0.00655965,0.00078633,0.00002292,
+     *   0.00000067,0.00002292,0.00019117,0.00038771,0.00019117,0.00002292,0.00000067];
+     *
+     * */
+    kernelFilter: function (imageData, resultData, width, height, kernel, kernelSize, kernelCenter) {
         var normalizeCoefficient = 0;
         var i = kernel.length;
         while (i--) normalizeCoefficient += kernel[i];
-        normalizeCoefficient = 1 / normalizeCoefficient;
+        normalizeCoefficient = 1 / normalizeCoefficient;  // calculating running total normalizing coefficient
 
-        var d = imageData.data;
-        var newd = resultData.data;
-        for (var r = 0; r < height; r++) {
-            for (var p = 0; p < width; p++) {
+        var d = imageData.data;  // shorthand to imageData.data
+        var newd = resultData.data;  //shorthand to resultData.data
+
+        for (var r = 0; r < height; r++) {  // iterating over rows
+            for (var p = 0; p < width; p++) {  // iterating over columns of source image
 
                 //filter totals
                 var Rt = 0;
                 var Gt = 0;
                 var Bt = 0;
 
-                var index2 = (r * width + p) << 2; //*4
+                var index2 = (r * width + p) << 2; //*4  - index of current output pixel in plain ImageData.data structure
 
-                for (var kr = 0; kr < kernelSize; kr++) {
+                for (var kr = 0; kr < kernelSize; kr++) { // iterating over kernel
                     for (var kp = 0; kp < kernelSize; kp++) {
                         var pp = p + kp - kernelCenter - 1; // -1 to center kernel
                         var rr = r + kr - kernelCenter - 1;
+
+                        // boundary condition: boundaries continued,
+                        // so we just set as (x,y) of source image pixel at boundaries
+
                         if (rr >= height) rr = height - 1;
                         else if (rr < 0) rr = 0;
                         if (pp >= width) pp = width - 1;
                         else if (pp < 0) pp = 0;
 
-                        var index = (rr * width + pp) << 2; // *4
-                        var kindex = kr * kernelSize + kp;
+                        var index = (rr * width + pp) << 2; // *4  index of source image's pixel
+                        var kindex = kr * kernelSize + kp; // index of kernel's pixel
 
+                        // calculating sum of running total
                         Rt += d[index] * kernel[kindex];
                         Gt += d[index + 1] * kernel[kindex];
                         Bt += d[index + 2] * kernel[kindex];
@@ -120,10 +158,11 @@ crompir.processing = {
                     }
                 }
 
-                newd[index2] = Rt * normalizeCoefficient;
-                newd[index2 + 1] = Gt * normalizeCoefficient;
-                newd[index2 + 2] = Bt * normalizeCoefficient;
-                newd[index2 + 3] = 255;
+                // Storing result data into output structure and normalizing color components.
+                newd[index2]     = Rt * normalizeCoefficient; // red
+                newd[index2 + 1] = Gt * normalizeCoefficient; // green
+                newd[index2 + 2] = Bt * normalizeCoefficient; // blue
+                newd[index2 + 3] = 255;                       // alpha
             }
         }
     },
@@ -134,6 +173,14 @@ crompir.processing = {
         var newWidth = -1;
         var newHeight = -1;
 
+        var tmpCanvasContext;
+        var tmpCanvas;
+        var canvasCopy;
+        var canvasContext;
+        var srcImageData;
+        var destImageData;
+
+        //todo: Нахуя ты расширил АПИ?!
         if (params['previewSize']) {
             var previewScale;
             if (srcImgHeight > srcImgWidth) {
@@ -143,7 +190,8 @@ crompir.processing = {
             }
             newHeight = srcImgHeight * previewScale;
             newWidth = srcImgWidth * previewScale;
-        } else if (params['newWidth']) {
+        } else
+        if (params['newWidth']) {
             newWidth = params['newWidth'];
             if (params['newHeight']) {
                 newHeight = params['newHeight'];
@@ -167,8 +215,8 @@ crompir.processing = {
         createPreviewImage();
 
         var factor = srcImgWidth / newWidth;
-        var d0data = d0.data;
-        var ddata = d.data;
+        var srcImageDataArray = srcImageData.data;
+        var destImageDataArray = destImageData.data;
 
         if (factor > 1.0) {
             factorIsBig();
@@ -176,28 +224,29 @@ crompir.processing = {
             factorIsSmall();
         }
 
-        ctx.putImageData(d, 0, 0);
+        canvasContext.putImageData(destImageData, 0, 0);
 
         return canvasCopy;
 
         function createPreviewImage() {
             canvasCopy = document.createElement("canvas");
-            ctx = canvasCopy.getContext("2d");
+            canvasContext = canvasCopy.getContext("2d");
             canvasCopy.width = newWidth;
             canvasCopy.height = newHeight;
             canvasCopy.className = 'image';
-            d0 = tctx.getImageData(0, 0, srcImgWidth, srcImgHeight); // source image
-            d = ctx.getImageData(0, 0, newWidth, newHeight);
+            srcImageData = tmpCanvasContext.getImageData(0, 0, srcImgWidth, srcImgHeight); // source image
+            destImageData = canvasContext.getImageData(0, 0, newWidth, newHeight);
         }
 
         function createSourceImage() {
             tmpCanvas = document.createElement("canvas");
-            tctx = tmpCanvas.getContext("2d");
+            tmpCanvasContext = tmpCanvas.getContext("2d");
             tmpCanvas.width = srcImgWidth;
             tmpCanvas.height = srcImgHeight;
-            tctx.drawImage(srcImg, 0, 0, srcImgWidth, srcImgHeight);
+            tmpCanvasContext.drawImage(srcImg, 0, 0, srcImgWidth, srcImgHeight);
         }
 
+        // if factor is small we use normal linear resampling
         function factorIsBig() {
             var aperture = factor * 0.33; // average by 3x3 pixels
             for (var j = 0; j < newHeight; j++) {
@@ -216,21 +265,22 @@ crompir.processing = {
                         var ijj = (ij | 0) * srcImgWidth;
                         for (var ii = i0; ii < i1; ii += aperture) {
                             var index2 = (ijj + ii | 0) << 2; //*4
-                            r += d0data[index2];
-                            g += d0data[index2 + 1];
-                            b += d0data[index2 + 2];
+                            r += srcImageDataArray[index2];
+                            g += srcImageDataArray[index2 + 1];
+                            b += srcImageDataArray[index2 + 2];
                             c += 1.0;
                         }
                     }
                     var ic = 1.0 / c;
-                    ddata[index] = r * ic;
-                    ddata[index + 1] = g * ic;
-                    ddata[index + 2] = b * ic;
-                    ddata[index + 3] = 255;
+                    destImageDataArray[index] = r * ic;
+                    destImageDataArray[index + 1] = g * ic;
+                    destImageDataArray[index + 2] = b * ic;
+                    destImageDataArray[index + 3] = 255;
                 }
             }
         }
 
+        // if factor is big enlargement will be done using Magic Kernel: http://johncostella.webs.com/magic/
         function factorIsSmall() {
             for (var j = 0; j < newHeight; j++) {
                 var jw = j * newWidth;
@@ -260,20 +310,19 @@ crompir.processing = {
                             } else if (x <= 1.0) {
                                 k = 2.0 * (x - Math.sqrt(x)) + 1.0;
                             }
-                            r += d0data[index2] * k;
-                            g += d0data[index2 + 1] * k;
-                            b += d0data[index2 + 2] * k;
+                            r += srcImageDataArray[index2] * k;
+                            g += srcImageDataArray[index2 + 1] * k;
+                            b += srcImageDataArray[index2 + 2] * k;
                             c += k;
                         }
                     }
                     var ic = 1.0 / c;
-                    ddata[index] = r * ic;
-                    ddata[index + 1] = g * ic;
-                    ddata[index + 2] = b * ic;
-                    ddata[index + 3] = 255;
+                    destImageDataArray[index] = r * ic;
+                    destImageDataArray[index + 1] = g * ic;
+                    destImageDataArray[index + 2] = b * ic;
+                    destImageDataArray[index + 3] = 255;
                 }
             }
         }
-
     }
 };

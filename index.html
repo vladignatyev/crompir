@@ -37,7 +37,7 @@
 
         $(document).ready(function () {
             $('input[name=file]').bind('change', function(event){
-                var loader = new crompir.Loader();
+                var loader = new crompir.PreviewLoader();
                 $(loader).bind('progress', function(event, data){
                     createImage(data.preview);
                 });
