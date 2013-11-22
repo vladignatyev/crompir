@@ -48,24 +48,32 @@
                     $('#save').bind('click', function(){
                         saveImages();
                     });
-                    $('#save').show();
+                    $('#save').removeClass('_disabled');
                 });
                 loader.load(event.target.files);
                 console.log(event.target.files);
             });
         });
-        $('#save').click(function(){
-        });
+        $('#save').click();
     </script>
 </head>
 <body>
 <div id="status"></div>
-<div id="crompir">
-    <input name="file" type="file" multiple/>
-    <button id="save" style="display: none;">Save...</button>
+<div class="menu">
+    <input id="load_input" class="menu_item_load" name="file" type="file" multiple/>
+    <span id="load" class="menu_item" onclick="$('#load_input').click()">Load</span>
+    <span id="save" class="menu_item _disabled">Save</span>
+    <span id="save" class="menu_item" onclick="alert('Need no Photoshop anymore.')">About</span>
 </div>
-<div class="tools">
-    Поле со всякими функциональными кнопочками и переключателями.
+<div class="toolbar">
+    Правило массового ресайза (не работает)
+    <select id="resize" style="width: 90%">
+        <option value="width">Ширина</option>
+        <option value="height">Высота</option>
+        <option value="length">Наибольшая длина</option>
+        <option value="file_size">Вес файла</option>
+    </select>
+    <input type="text" value="800" style="width: 90%">
     <div class="scale">
         Scale
         <span onclick="setScale(100)">small</span>
@@ -73,7 +81,7 @@
         <span onclick="setScale(200)">big</span>
     </div>
 </div>
-<div class="images"></div>
+<div id="images" class="images"></div>
 
 </body>
 </html>

@@ -2,9 +2,8 @@ body {
     margin: 0;
 }
 
-.clear {
-    clear: both;
-}
+.clear {clear: both}
+.h {display: none}
 
 .image {
     border: 2px solid white;
@@ -24,9 +23,47 @@ body {
     text-align: center;
     width: 150px;
 }
+.image_save_button {
+    background: red;
+    cursor: pointer;
+    height: 20px;
+    line-height: 1;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 20px;
+}
 .images {
     border-left: 1px solid black;
     margin-left: 160px;
+}
+
+.menu {
+    border-right: 1px solid black;
+    /*height: 90%;*/
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 150px;
+}
+.menu_item {
+    border-bottom: 1px dashed #0066cc;
+    color: #0066cc;
+    cursor: pointer;
+    margin-right: 10px;
+    overflow: hidden;
+}
+.menu_item._disabled {
+    border: none;
+    color: #ccc;
+    cursor: default;
+}
+.menu_item_load {
+    cursor: pointer;
+    left: 0;
+    height: 100%;
+    position: absolute;
+    top: -100px;
 }
 
 .popup_content {
@@ -59,12 +96,11 @@ body {
     text-decoration: underline;
 }
 
-.tools {
+.toolbar {
     border-right: 1px solid black;
-    border-bottom: 1px solid black;
     height: 90%;
     position: fixed;
     left: 0;
-    top: 30;
+    top: 30px;
     width: 150px;
 }
