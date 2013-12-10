@@ -11,10 +11,16 @@ $( document ).ready(function() {
 });
 
 function createImage(image) {
-    var div = $('<div class="image_block">');
-    $('.images').append(div);
-    $(div).append(image);
-    $(div).append($('<div class="image_save_button h">').text('S'));
+    var image_block = $('<div class="image_block">');
+    $(image_block).append(image);
+
+    var image_menu = $('<div class="image_menu">');
+    $(image_block).append(image_menu);
+    image_menu.append($('<div class="image_menu_item" title="Save">').text('S'));
+    image_menu.append($('<div class="image_menu_item" title="Export">').text('E'));
+    image_menu.append($('<div class="image_menu_item" title="Delete">').text('D'));
+
+    $('#images').append(image_block);
 }
 
 function setScale(value) {

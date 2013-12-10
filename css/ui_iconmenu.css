@@ -1,0 +1,65 @@
+body {
+    margin: 0;
+}
+
+.clear {clear: both}
+.h {display: none}
+
+.image {
+    border: 2px solid white;
+    box-shadow: 0 0 3px 1px #bbb;
+    cursor: pointer;
+    max-height: 100%;
+    max-width: 100%;
+    vertical-align: middle;
+}
+.image_block {
+    float: left;
+    height: 150px;
+    line-height: 150px;
+    margin: 0 10px 10px 0;
+    padding: 5px;
+    position: relative;
+    text-align: center;
+    width: 150px;
+}
+.image_block:hover .image_menu {
+    display: block;
+}
+.image_menu {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 25px;
+}
+.image_menu_item {
+    background: #ddd;
+    cursor: pointer;
+    height: 32px;
+    line-height: 32px;
+    margin-top: 4px;
+    width: 32px;
+}
+.image_menu_item:hover {
+    background: #add;
+}
+.images {
+    margin-left: 100px;
+}
+
+.menu {
+    border-right: 1px solid black;
+    position: fixed;
+}
+.menu_item {
+    background: #ddd;
+    cursor: pointer;
+    height: 64px;
+    line-height: 64px;
+    margin: 0 4px 4px 0;
+    text-align: center;
+    width: 64px;
+}
+.menu_item:hover {
+    background: #add;
+}

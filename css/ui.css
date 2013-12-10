@@ -66,26 +66,6 @@ body {
     top: -100px;
 }
 
-.popup_content {
-    max-height: 90%;
-    max-width: 90%;
-    position: fixed;
-}
-.popup_image {
-    max-height: 100%;
-    max-width: 100%;
-    vertical-align: top;
-}
-.popup_layout {
-    background: black;
-    height: 100%;
-    left: 0;
-    opacity: 0.8;
-    position: fixed;
-    top: 0;
-    width: 100%;
-}
-
 .scale {
     position: absolute;
     bottom: 0;
