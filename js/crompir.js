@@ -54,8 +54,12 @@ crompir.PreviewLoader = function (previewSize) {
         function onload() {
             var image = new Image();
             image.onload = function (event) {
-                var previewCanvas = crompir.processing.resizeImage(image, {'previewSize': PREVIEW_SIZE});
-
+                var previewCanvas;
+                if (image.height > image.width) {
+                    previewCanvas = crompir.processing.resizeImage(image, {'newHeight': PREVIEW_SIZE});
+                } else {
+                    previewCanvas = crompir.processing.resizeImage(image, {'newHeight': PREVIEW_SIZE});
+                }
                 updateProgress(++fileLoadingCursor, previewCanvas, image);
                 recursivelyLoad();
             };
@@ -180,17 +184,6 @@ crompir.processing = {
         var srcImageData;
         var destImageData;
 
-        //todo: Нахуя ты расширил АПИ?!
-        if (params['previewSize']) {
-            var previewScale;
-            if (srcImgHeight > srcImgWidth) {
-                previewScale = params['previewSize'] / srcImgHeight;
-            } else {
-                previewScale = params['previewSize'] / srcImgWidth;
-            }
-            newHeight = srcImgHeight * previewScale;
-            newWidth = srcImgWidth * previewScale;
-        } else
         if (params['newWidth']) {
             newWidth = params['newWidth'];
             if (params['newHeight']) {
